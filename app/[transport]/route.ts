@@ -1,74 +1,86 @@
-import { getOrders, placeOrder } from "@/lib/orders";
-import { products } from "@/lib/products";
 import { withAuthkit } from "@/lib/with-authkit";
 import createMcpHandler from "@vercel/mcp-adapter/next";
 import { z } from "zod";
+import { prisma } from "@/lib/db";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const handler = withAuthkit((request, auth) =>
   createMcpHandler(
     (server) => {
       server.tool(
-        "listMcpShopInventory",
-        "Returns a list of the items for sale at mcp.shop. " +
-          "mcp.shop is a promotional store hosted by WorkOS for MCP Night" +
-          "This tool should be used whenever someone wants to purchase " +
-          "products relating to MCP, model context protocol, or items from " +
-          "mcp.shop. Currently, everything is free.",
-        () => {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify({
-                  title: "mcp.shop inventory",
-                  products: [
-                    {
-                      label: "Shirt",
-                      description: products.shirt.descriptionHtml,
-                      image_url:
-                        "https://mcp.shop/shirt.jpg",
-                    },
-                  ],
-                }),
-              },
-            ],
-          };
-        },
-      );
-
-      server.tool(
-        "buyMcpShopItem",
-        "Orders a t-shirt from the MCP shop. WorkOS is providing the items." +
-          "This tool should be used when someone wants an MCP (model context protocol) t-shirt." +
-          "We cannot fulfill their order without a valid U.S. based mailing address. " +
-          "Company is a required field." +
-          "tshirtSize is one of the standard t-shirt sizes (S, M, L, XL, XXL, XXL).",
+        "addPreference",
+        "Adds or updates a user preference based on natural language input. " +
+        "The tool uses OpenAI to understand the intent and update the appropriate preference field. " +
+        "Example: 'I prefer to be called John' would update the name field.",
         {
-          company: z.string(),
-          mailingAddress: z.string(),
-          tshirtSize: z.string(),
+          naturalLanguageInput: z.string().describe("The natural language input describing the preference to add or update"),
         },
         async (args) => {
           try {
-            const order = await placeOrder(args, auth.user);
+            const { user } = auth;
+            if (!user) {
+              return {
+                content: [{ type: "text", text: "Please sign in to update preferences." }],
+              };
+            }
+
+            // Use OpenAI to understand the intent
+            const completion = await openai.chat.completions.create({
+              model: "gpt-4",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, language, tone, interests, apiKey."
+                },
+                {
+                  role: "user",
+                  content: args.naturalLanguageInput
+                }
+              ],
+              response_format: { type: "json_object" }
+            });
+
+            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const { field, value } = parsedResponse;
+
+            // Update the preference in the database
+            const preferences = await prisma.userPreferences.upsert({
+              where: { userId: user.id },
+              update: { [field]: value },
+              create: {
+                userId: user.id,
+                [field]: value,
+                name: "",
+                language: "",
+                tone: "",
+                interests: "",
+                apiKey: "",
+              },
+            });
+
             return {
               content: [
                 {
                   type: "text",
                   text: JSON.stringify({
                     status: "success",
-                    ...order,
+                    message: `Updated ${field} to "${value}"`,
+                    preferences,
                   }),
                 },
               ],
             };
           } catch (e) {
-            console.error("Error placing order", e);
+            console.error("Error updating preference:", e);
             return {
               content: [
                 {
                   type: "text",
-                  text: "Something went wrong. Try again later.",
+                  text: "Failed to update preference. Please try again.",
                 },
               ],
             };
@@ -77,32 +89,145 @@ const handler = withAuthkit((request, auth) =>
       );
 
       server.tool(
-        "listMcpShopOrders",
-        "Lists the orders placed by the user at mcp.shop" +
-          "Use this tool if a user needs to review the orders they've " +
-          "placed. There is no way to adjust an order at this time. " +
-          "(The user should contact WorkOS instead).",
-        async () => {
+        "removePreference",
+        "Removes or clears a specific preference based on natural language input. " +
+        "The tool uses OpenAI to understand which preference to remove. " +
+        "Example: 'Remove my API key' would clear the apiKey field.",
+        {
+          naturalLanguageInput: z.string().describe("The natural language input describing the preference to remove"),
+        },
+        async (args) => {
           try {
-            const orders = await getOrders(auth.user);
+            const { user } = auth;
+            if (!user) {
+              return {
+                content: [{ type: "text", text: "Please sign in to remove preferences." }],
+              };
+            }
+
+            // Use OpenAI to understand the intent
+            const completion = await openai.chat.completions.create({
+              model: "gpt-4",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey."
+                },
+                {
+                  role: "user",
+                  content: args.naturalLanguageInput
+                }
+              ],
+              response_format: { type: "json_object" }
+            });
+
+            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const { field } = parsedResponse;
+
+            // Clear the preference in the database
+            const preferences = await prisma.userPreferences.update({
+              where: { userId: user.id },
+              data: { [field]: "" },
+            });
+
             return {
               content: [
                 {
                   type: "text",
                   text: JSON.stringify({
                     status: "success",
-                    orders,
+                    message: `Cleared ${field}`,
+                    preferences,
                   }),
                 },
               ],
             };
           } catch (e) {
-            console.error("Error listing orders", e);
+            console.error("Error removing preference:", e);
             return {
               content: [
                 {
                   type: "text",
-                  text: "Something went wrong. Try again later.",
+                  text: "Failed to remove preference. Please try again.",
+                },
+              ],
+            };
+          }
+        },
+      );
+
+      server.tool(
+        "findPreference",
+        "Searches for preferences based on natural language input. " +
+        "The tool uses OpenAI to understand what information to look for. " +
+        "Example: 'What language do I prefer?' would return the language preference.",
+        {
+          naturalLanguageInput: z.string().describe("The natural language input describing what preference to find"),
+        },
+        async (args) => {
+          try {
+            const { user } = auth;
+            if (!user) {
+              return {
+                content: [{ type: "text", text: "Please sign in to view preferences." }],
+              };
+            }
+
+            // Use OpenAI to understand the intent
+            const completion = await openai.chat.completions.create({
+              model: "gpt-4",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey."
+                },
+                {
+                  role: "user",
+                  content: args.naturalLanguageInput
+                }
+              ],
+              response_format: { type: "json_object" }
+            });
+
+            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const { field } = parsedResponse;
+
+            // Get the preference from the database
+            const preferences = await prisma.userPreferences.findUnique({
+              where: { userId: user.id },
+            });
+
+            if (!preferences) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: "No preferences found.",
+                  },
+                ],
+              };
+            }
+
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({
+                    status: "success",
+                    field,
+                    value: preferences[field],
+                    preferences,
+                  }),
+                },
+              ],
+            };
+          } catch (e) {
+            console.error("Error finding preference:", e);
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Failed to find preference. Please try again.",
                 },
               ],
             };
