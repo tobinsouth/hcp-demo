@@ -217,8 +217,7 @@ const handler = withAuthkit((request, auth) =>
     },
     {
       // Optional configuration
-      redisUrl: process.env.REDIS_URL,
-      streamableHttpEndpoint: "/mcp",
+            streamableHttpEndpoint: "/mcp",
       sseEndpoint: "/sse",
       maxDuration: 600,
       verboseLogs: true,
