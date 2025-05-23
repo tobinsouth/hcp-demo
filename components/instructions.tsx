@@ -37,17 +37,15 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
           </button> */}
           <div className="w-full overflow-x-hidden pt-4 md:pt-8">
             <h1 className="text-2xl sm:text-3xl font-bold">
-              MCP Shop Instructions
+              Human Context Protocol Instructions
             </h1>
             <p className="mt-2 mb-1 text-base break-words">
-              Welcome to MCP Shop&apos;s LLM storefront! Place your order by
-              connecting your favorite MCP-compatible LLM to MCP Shop&apos;s MCP
-              server.
+              Welcome to the Human Context Protocol! Connect your favorite HCP-compatible LLM to our HCP server to get started.
             </p>
             <p className="text-base mt-2 break-words">
-              MCP Shop uses <Link href="https://www.authkit.com">AuthKit</Link>,
-              so after you&apos;ve installed the MCP server, you&apos;ll be
-              prompted to sign up for an MCP Shop account.
+              The Human Context Protocol uses <Link href="https://www.authkit.com">AuthKit</Link>,
+              so after you&apos;ve installed the HCP server, you&apos;ll be
+              prompted to sign up for an account.
             </p>
             <h4 className="text-base sm:text-lg font-bold my-3 pt-4">
               Option 1: Claude Integrations
@@ -57,14 +55,14 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
               <Link href="https://www.anthropic.com/news/integrations">
                 support for Integrations
               </Link>
-              , which support remote MCP servers. With WorkOS, we can add
-              authorization to that MCP server.
+              , which support remote HCP servers. With WorkOS, we can add
+              authorization to that HCP server.
             </p>
             <p className="my-3 text-base break-words">
               If your Claude account has Integrations available, go to the
               Integrations section of the Settings menu, select &quot;Add
-              more&quot;, and enter &quot;MCP Shop&quot; in the name, and{" "}
-              <code>https://mcp.shop/sse</code> in the URL field.
+              more&quot;, and enter &quot;Human Context Protocol&quot; in the name, and{" "}
+              <code>https://hcp.io/sse</code> in the URL field.
             </p>
             <div className="w-full flex justify-center">
               <Image
@@ -76,12 +74,12 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
               />
             </div>
             <h4 className="text-base sm:text-lg font-bold my-3 pt-4">
-              Option 2: Local MCP
+              Option 2: Local HCP
             </h4>
             <p className="my-3 text-base break-words">
-              You can also order MCP swag via a local MCP server via{" "}
+              You can also connect via a local HCP server using{" "}
               <Link href="https://github.com/geelen/mcp-remote">
-                <code>mcp-remote</code>
+                <code>hcp-remote</code>
               </Link>
               .
             </p>
@@ -96,9 +94,9 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
             <div className="w-full overflow-x-auto">
               <pre className="my-3 p-2 sm:p-4 text-xs sm:text-sm border rounded-lg border-neutral-700 bg-neutral-900 whitespace-pre-wrap sm:whitespace-pre">{`{
   "mcpServers": {
-    "mcp.shop": {
+    "hcp": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.shop/mcp"]
+      "args": ["-y", "hcp-remote", "https://hcp.io/hcp"]
     }
   }
 }`}</pre>
@@ -107,9 +105,9 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
               Setup for other tools (like{" "}
               <Link href="https://block.github.io/goose/">Goose</Link>) is
               generally pretty similar: a <code>command</code> string, and an
-              `args` list of strings. Support for remote MCP servers is still
+              `args` list of strings. Support for remote HCP servers is still
               new, so for now a lot of tools will require a proxy like{" "}
-              <code>mcp-remote</code>.
+              <code>hcp-remote</code>.
             </p>
             <div className="flex justify-center w-full">
               <Button

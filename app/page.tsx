@@ -1,4 +1,4 @@
-import ProductPage from "@/components/product/product-page";
+import { LandingPage } from "@/components/landing-page/landing-page";
 import { Suspense } from "react";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
       
       <main className="flex-1">
         <Suspense fallback={<div>Loading...</div>}>
-          <ProductPage />
+          <LandingPage />
         </Suspense>
       </main>
     </div>
