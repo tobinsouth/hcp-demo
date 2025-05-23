@@ -1,38 +1,87 @@
-# mcp.shop
+# Human Context Protocol (HCP)
 
-The world's first MCP-based web shop.
+A Next.js application that implements the Human Context Protocol, providing a personalized experience through user preferences and AI-powered natural language interaction.
+
+## Features
+
+- **User Preferences Management**: Store and manage user preferences including:
+  - Display name
+  - Language preferences
+  - Communication tone
+  - Personal interests
+  - API keys
+
+- **Natural Language Interface**: Interact with preferences using natural language through MCP tools:
+  - `addPreference`: Add or update preferences using natural language
+  - `removePreference`: Remove or clear specific preferences
+  - `findPreference`: Search and retrieve preference information
+
+- **Authentication**: Secure user authentication using WorkOS AuthKit
+- **Database**: Persistent storage using Prisma with SQLite
+- **AI Integration**: OpenAI-powered natural language processing for preference management
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
 
+3. Set up environment variables:
+```bash
+OPENAI_API_KEY=your_openai_api_key
+DATABASE_URL="file:./dev.db"
+```
+
+4. Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/app`: Next.js application routes and pages
+- `/components`: React components
+- `/lib`: Utility functions and database configuration
+- `/prisma`: Database schema and migrations
+
+## Technology Stack
+
+- **Framework**: Next.js 14
+- **Authentication**: WorkOS AuthKit
+- **Database**: Prisma with SQLite
+- **AI**: OpenAI GPT-4
+- **Styling**: Tailwind CSS
+- **Protocol**: Model Context Protocol (MCP)
+
+## Development
+
+The application uses the following key technologies:
+
+- `@vercel/mcp-adapter`: For MCP tool implementation
+- `@workos-inc/authkit-nextjs`: For authentication
+- `openai`: For natural language processing
+- `prisma`: For database management
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [WorkOS AuthKit Documentation](https://workos.com/docs/reference/authkit)
+- [OpenAI API Documentation](https://platform.openai.com/docs/api-reference)
+- [Prisma Documentation](https://www.prisma.io/docs)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application can be deployed on Vercel:
 
-## Deploy on Vercel
+1. Push your code to a Git repository
+2. Import the project in Vercel
+3. Configure the required environment variables
+4. Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Please feel free to submit a Pull Request.
