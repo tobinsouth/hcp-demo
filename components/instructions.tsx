@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import { Button } from "@radix-ui/themes";
+import { Button } from "@/components/ui/button";
 
 declare module "react" {
   interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -62,7 +62,7 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
               If your Claude account has Integrations available, go to the
               Integrations section of the Settings menu, select &quot;Add
               more&quot;, and enter &quot;Human Context Protocol&quot; in the name, and{" "}
-              <code>https://hcp.io/sse</code> in the URL field.
+              <code>http://localhost:3000/mcp</code> in the URL field.
             </p>
             <div className="w-full flex justify-center">
               <Image
@@ -77,9 +77,9 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
               Option 2: Local HCP
             </h4>
             <p className="my-3 text-base break-words">
-              You can also connect via a local HCP server using{" "}
+              You can also connect via a local MCP server using{" "}
               <Link href="https://github.com/geelen/mcp-remote">
-                <code>hcp-remote</code>
+                <code>mcp-remote</code>
               </Link>
               .
             </p>
@@ -96,7 +96,7 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
   "mcpServers": {
     "hcp": {
       "command": "npx",
-      "args": ["-y", "hcp-remote", "https://hcp.io/hcp"]
+      "args": ["mcp-remote", "http://localhost:3000/mcp"]
     }
   }
 }`}</pre>
@@ -111,10 +111,7 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
             </p>
             <div className="flex justify-center w-full">
               <Button
-                color="gray"
-                variant="outline"
-                highContrast
-                size="3"
+                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-8 py-6 text-lg rounded-full"
                 onClick={() => {
                   dialogRef.current?.close();
                 }}
@@ -127,10 +124,7 @@ export const Instructions = ({ openButtonLabel }: InstructionsProps) => {
       </dialog>
 
       <Button
-        color="gray"
-        variant="outline"
-        highContrast
-        size="3"
+        className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-8 py-6 text-lg rounded-full"
         onClick={() => {
           dialogRef.current?.showModal();
         }}

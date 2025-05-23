@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectItem } from "@/components/ui/select";
 
 interface FormData {
   // Basic Info
@@ -99,7 +105,7 @@ export function PreferencesForm() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Preferences</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Preferences</h1>
       
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -115,188 +121,157 @@ export function PreferencesForm() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
               type="text"
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              placeholder="Your name"
             />
           </div>
-        </div>
+        </Card>
 
         {/* Location Information */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Location Information</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Address
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="address">Address</Label>
+              <Input
                 type="text"
                 id="address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="Street address"
               />
             </div>
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                City
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <Input
                 type="text"
                 id="city"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="City"
               />
             </div>
-            <div>
-              <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                State
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="state">State</Label>
+              <Input
                 type="text"
                 id="state"
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="State"
               />
             </div>
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                Country
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input
                 type="text"
                 id="country"
                 value={formData.country}
                 onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="Country"
               />
             </div>
-            <div>
-              <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-                ZIP Code
-              </label>
-              <input
+            <div className="space-y-2 col-span-2">
+              <Label htmlFor="zipCode">ZIP Code</Label>
+              <Input
                 type="text"
                 id="zipCode"
                 value={formData.zipCode}
                 onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="ZIP Code"
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* General Preferences */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">General Preferences</h2>
-          <div>
-            <label htmlFor="generalPreferences" className="block text-sm font-medium text-gray-700">
-              General Preferences
-            </label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="generalPreferences">General Preferences</Label>
+            <Textarea
               id="generalPreferences"
               value={formData.generalPreferences}
               onChange={(e) => setFormData({ ...formData, generalPreferences: e.target.value })}
               rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               placeholder="Enter your general preferences (e.g., language, timezone, theme, notification preferences)"
             />
           </div>
-        </div>
+        </Card>
 
         {/* Sensitive Preferences */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Sensitive Preferences</h2>
           <div className="space-y-4">
-            <div>
-              <label htmlFor="privacySettings" className="block text-sm font-medium text-gray-700">
-                Privacy Settings
-              </label>
-              <select
-                id="privacySettings"
+            <div className="space-y-2">
+              <Label htmlFor="privacySettings">Privacy Settings</Label>
+              <Select
                 value={formData.privacySettings}
-                onChange={(e) => setFormData({ ...formData, privacySettings: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                onValueChange={(value) => setFormData({ ...formData, privacySettings: value })}
+                placeholder="Select privacy level"
               >
-                <option value="">Select privacy level</option>
-                <option value="strict">Strict</option>
-                <option value="moderate">Moderate</option>
-                <option value="relaxed">Relaxed</option>
-              </select>
+                <SelectItem value="strict">Strict</SelectItem>
+                <SelectItem value="moderate">Moderate</SelectItem>
+                <SelectItem value="relaxed">Relaxed</SelectItem>
+              </Select>
             </div>
-            <div>
-              <label htmlFor="dataSharing" className="block text-sm font-medium text-gray-700">
-                Data Sharing
-              </label>
-              <select
-                id="dataSharing"
+            <div className="space-y-2">
+              <Label htmlFor="dataSharing">Data Sharing</Label>
+              <Select
                 value={formData.dataSharing}
-                onChange={(e) => setFormData({ ...formData, dataSharing: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                onValueChange={(value) => setFormData({ ...formData, dataSharing: value })}
+                placeholder="Select data sharing preference"
               >
-                <option value="">Select data sharing preference</option>
-                <option value="none">No Sharing</option>
-                <option value="anonymous">Anonymous Only</option>
-                <option value="full">Full Sharing</option>
-              </select>
+                <SelectItem value="none">No Sharing</SelectItem>
+                <SelectItem value="anonymous">Anonymous Only</SelectItem>
+                <SelectItem value="full">Full Sharing</SelectItem>
+              </Select>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Stored Credentials */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Stored Credentials</h2>
           <div className="space-y-4">
-            <div>
-              <label htmlFor="apiKeys" className="block text-sm font-medium text-gray-700">
-                API Keys
-              </label>
-              <textarea
+            <div className="space-y-2">
+              <Label htmlFor="apiKeys">API Keys</Label>
+              <Textarea
                 id="apiKeys"
                 value={formData.apiKeys}
                 onChange={(e) => setFormData({ ...formData, apiKeys: e.target.value })}
                 rows={3}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 placeholder="Enter API keys (one per line)"
               />
             </div>
-            <div>
-              <label htmlFor="tokens" className="block text-sm font-medium text-gray-700">
-                Tokens
-              </label>
-              <textarea
+            <div className="space-y-2">
+              <Label htmlFor="tokens">Tokens</Label>
+              <Textarea
                 id="tokens"
                 value={formData.tokens}
                 onChange={(e) => setFormData({ ...formData, tokens: e.target.value })}
                 rows={3}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 placeholder="Enter tokens (one per line)"
               />
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div>
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-          >
-            {isSaving ? 'Saving...' : 'Save Preferences'}
-          </button>
-        </div>
+        <Button
+          type="submit"
+          disabled={isSaving}
+          className="w-full text-lg font-semibold mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+        >
+          {isSaving ? 'Saving...' : 'Save Preferences'}
+        </Button>
       </form>
     </div>
   );
