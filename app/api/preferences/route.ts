@@ -2,16 +2,18 @@ import { withAuth } from "@workos-inc/authkit-nextjs";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+// Temporary debug user ID
+const DEBUG_USER_ID = "debug-user-123";
+
 export async function GET() {
   try {
-    const { user } = await withAuth();
-    
-    if (!user) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // const { user } = await withAuth();
+    // if (!user) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
     const preferences = await prisma.userPreferences.findUnique({
-      where: { userId: user.id },
+      where: { userId: DEBUG_USER_ID },
     });
 
     return NextResponse.json(preferences || {});
@@ -23,16 +25,15 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { user } = await withAuth();
-    
-    if (!user) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // const { user } = await withAuth();
+    // if (!user) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
     const data = await request.json();
 
     const preferences = await prisma.userPreferences.upsert({
-      where: { userId: user.id },
+      where: { userId: DEBUG_USER_ID },
       update: {
         name: data.name,
         language: data.language,
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
         apiKey: data.apiKey,
       },
       create: {
-        userId: user.id,
+        userId: DEBUG_USER_ID,
         name: data.name,
         language: data.language,
         tone: data.tone,

@@ -8,6 +8,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Temporary debug user ID
+const DEBUG_USER_ID = "debug-user-123";
+
 const handler = withAuthkit((request, auth) =>
   createMcpHandler(
     (server) => {
@@ -21,13 +24,6 @@ const handler = withAuthkit((request, auth) =>
         },
         async (args) => {
           try {
-            const { user } = auth;
-            if (!user) {
-              return {
-                content: [{ type: "text", text: "Please sign in to update preferences." }],
-              };
-            }
-
             // Use OpenAI to understand the intent
             const completion = await openai.chat.completions.create({
               model: "gpt-4",
@@ -49,16 +45,11 @@ const handler = withAuthkit((request, auth) =>
 
             // Update the preference in the database
             const preferences = await prisma.userPreferences.upsert({
-              where: { userId: user.id },
-              update: { [field]: value },
+              where: { userId: DEBUG_USER_ID },
+              update: updateData,
               create: {
-                userId: user.id,
-                [field]: value,
-                name: "",
-                language: "",
-                tone: "",
-                interests: "",
-                apiKey: "",
+                userId: DEBUG_USER_ID,
+                ...updateData
               },
             });
 
@@ -98,13 +89,6 @@ const handler = withAuthkit((request, auth) =>
         },
         async (args) => {
           try {
-            const { user } = auth;
-            if (!user) {
-              return {
-                content: [{ type: "text", text: "Please sign in to remove preferences." }],
-              };
-            }
-
             // Use OpenAI to understand the intent
             const completion = await openai.chat.completions.create({
               model: "gpt-4",
@@ -126,7 +110,7 @@ const handler = withAuthkit((request, auth) =>
 
             // Clear the preference in the database
             const preferences = await prisma.userPreferences.update({
-              where: { userId: user.id },
+              where: { userId: DEBUG_USER_ID },
               data: { [field]: "" },
             });
 
@@ -166,14 +150,7 @@ const handler = withAuthkit((request, auth) =>
         },
         async (args) => {
           try {
-            const { user } = auth;
-            if (!user) {
-              return {
-                content: [{ type: "text", text: "Please sign in to view preferences." }],
-              };
-            }
-
-            // Use OpenAI to understand the intent
+                        // Use OpenAI to understand the intent
             const completion = await openai.chat.completions.create({
               model: "gpt-4",
               messages: [
@@ -194,7 +171,7 @@ const handler = withAuthkit((request, auth) =>
 
             // Get the preference from the database
             const preferences = await prisma.userPreferences.findUnique({
-              where: { userId: user.id },
+              where: { userId: DEBUG_USER_ID },
             });
 
             if (!preferences) {
