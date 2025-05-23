@@ -30,20 +30,73 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, language, tone, interests, apiKey."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
                   content: args.naturalLanguageInput
                 }
-              ],
-              response_format: { type: "json_object" }
+              ]
             });
 
-            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const content = completion.choices[0].message.content;
+            if (!content) {
+              throw new Error("No response from OpenAI");
+            }
+
+            let parsedResponse;
+            try {
+              parsedResponse = JSON.parse(content);
+            } catch (e) {
+              throw new Error("Failed to parse OpenAI response as JSON");
+            }
+
             const { field, value } = parsedResponse;
 
-            // Update the preference in the database
+            // First get the current preferences
+            const currentPreferences = await prisma.userPreferences.findUnique({
+              where: { userId: DEBUG_USER_ID },
+            });
+            
+            console.log('Current preferences:', currentPreferences);
+
+            // Get the current value for the field
+            const currentValue = currentPreferences?.[field] || "";
+            console.log('Current value for field:', field, currentValue);
+
+            // Use OpenAI to combine the current and new preferences
+            const combineCompletion = await openai.chat.completions.create({
+              model: "gpt-4",
+              messages: [
+                {
+                  role: "system",
+                  content: `You are a preference combiner. Given a current preference text and a new preference, combine them into a single coherent preference text. 
+                  If the current text is empty, just use the new preference.
+                  If both exist, intelligently combine them while maintaining all important information.
+                  Return only the combined text, no explanation or JSON.`
+                },
+                {
+                  role: "user",
+                  content: `Current ${field}: "${currentValue}"\nNew ${field}: "${value}"`
+                }
+              ]
+            });
+
+            const combinedValue = combineCompletion.choices[0].message.content?.trim() || value;
+            console.log('Combined value:', combinedValue);
+
+            // Update the preference in the database with the combined value
+            const updateData = {
+              [field]: combinedValue,
+              // Preserve other fields from current preferences
+              name: field === 'name' ? combinedValue : (currentPreferences?.name ?? ""),
+              language: field === 'language' ? combinedValue : (currentPreferences?.language ?? ""),
+              tone: field === 'tone' ? combinedValue : (currentPreferences?.tone ?? ""),
+              interests: field === 'interests' ? combinedValue : (currentPreferences?.interests ?? ""),
+              apiKey: field === 'apiKey' ? combinedValue : (currentPreferences?.apiKey ?? ""),
+            };
+            console.log('Update data:', updateData);
+
             const preferences = await prisma.userPreferences.upsert({
               where: { userId: DEBUG_USER_ID },
               update: updateData,
@@ -52,6 +105,7 @@ const handler = withAuthkit((request, auth) =>
                 ...updateData
               },
             });
+            console.log('Updated preferences:', preferences);
 
             return {
               content: [
@@ -59,7 +113,10 @@ const handler = withAuthkit((request, auth) =>
                   type: "text",
                   text: JSON.stringify({
                     status: "success",
-                    message: `Updated ${field} to "${value}"`,
+                    message: `Updated ${field} to "${combinedValue}"`,
+                    previousValue: currentValue,
+                    newValue: value,
+                    combinedValue,
                     preferences,
                   }),
                 },
@@ -95,17 +152,27 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
                   content: args.naturalLanguageInput
                 }
-              ],
-              response_format: { type: "json_object" }
+              ]
             });
 
-            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const content = completion.choices[0].message.content;
+            if (!content) {
+              throw new Error("No response from OpenAI");
+            }
+
+            let parsedResponse;
+            try {
+              parsedResponse = JSON.parse(content);
+            } catch (e) {
+              throw new Error("Failed to parse OpenAI response as JSON");
+            }
+
             const { field } = parsedResponse;
 
             // Clear the preference in the database
@@ -150,23 +217,33 @@ const handler = withAuthkit((request, auth) =>
         },
         async (args) => {
           try {
-                        // Use OpenAI to understand the intent
+            // Use OpenAI to understand the intent
             const completion = await openai.chat.completions.create({
               model: "gpt-4",
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
                   content: args.naturalLanguageInput
                 }
-              ],
-              response_format: { type: "json_object" }
+              ]
             });
 
-            const parsedResponse = JSON.parse(completion.choices[0].message.content);
+            const content = completion.choices[0].message.content;
+            if (!content) {
+              throw new Error("No response from OpenAI");
+            }
+
+            let parsedResponse;
+            try {
+              parsedResponse = JSON.parse(content);
+            } catch (e) {
+              throw new Error("Failed to parse OpenAI response as JSON");
+            }
+
             const { field } = parsedResponse;
 
             // Get the preference from the database
@@ -217,7 +294,7 @@ const handler = withAuthkit((request, auth) =>
     },
     {
       // Optional configuration
-            streamableHttpEndpoint: "/mcp",
+      streamableHttpEndpoint: "/mcp",
       sseEndpoint: "/sse",
       maxDuration: 600,
       verboseLogs: true,
