@@ -9,7 +9,7 @@ export async function Navbar() {
   return (
     <nav className="flex items-center justify-between p-4 text-neutral-400">
       <Link className="flex" href="/">
-        <Image alt="HCP logo" src="/logo.png" height={40} width={40} />
+        {/* <Image alt="HCP logo" src="/logo.png" height={40} width={40} /> */}
         <div className="flex w-full items-center font-bold text-lg pl-1">
           HCP
         </div>
