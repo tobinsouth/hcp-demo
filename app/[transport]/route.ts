@@ -30,7 +30,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
@@ -73,6 +73,7 @@ const handler = withAuthkit((request, auth) =>
                   content: `You are a preference combiner. Given a current preference text and a new preference, combine them into a single coherent preference text. 
                   If the current text is empty, just use the new preference.
                   If both exist, intelligently combine them while maintaining all important information.
+                  For generalPreferences, combine all preferences into a single coherent string.
                   Return only the combined text, no explanation or JSON.`
                 },
                 {
@@ -89,11 +90,17 @@ const handler = withAuthkit((request, auth) =>
             const updateData = {
               [field]: combinedValue,
               // Preserve other fields from current preferences
-              name: field === 'name' ? combinedValue : (currentPreferences?.name ?? ""),
-              language: field === 'language' ? combinedValue : (currentPreferences?.language ?? ""),
-              tone: field === 'tone' ? combinedValue : (currentPreferences?.tone ?? ""),
-              interests: field === 'interests' ? combinedValue : (currentPreferences?.interests ?? ""),
-              apiKey: field === 'apiKey' ? combinedValue : (currentPreferences?.apiKey ?? ""),
+              name: field === 'name' ? combinedValue : (currentPreferences?.name ?? null),
+              address: field === 'address' ? combinedValue : (currentPreferences?.address ?? null),
+              city: field === 'city' ? combinedValue : (currentPreferences?.city ?? null),
+              state: field === 'state' ? combinedValue : (currentPreferences?.state ?? null),
+              country: field === 'country' ? combinedValue : (currentPreferences?.country ?? null),
+              zipCode: field === 'zipCode' ? combinedValue : (currentPreferences?.zipCode ?? null),
+              generalPreferences: field === 'generalPreferences' ? combinedValue : (currentPreferences?.generalPreferences ?? null),
+              privacySettings: field === 'privacySettings' ? combinedValue : (currentPreferences?.privacySettings ?? null),
+              dataSharing: field === 'dataSharing' ? combinedValue : (currentPreferences?.dataSharing ?? null),
+              apiKeys: field === 'apiKeys' ? combinedValue : (currentPreferences?.apiKeys ?? null),
+              tokens: field === 'tokens' ? combinedValue : (currentPreferences?.tokens ?? null),
             };
             console.log('Update data:', updateData);
 
@@ -152,7 +159,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
@@ -223,7 +230,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, language, tone, interests, apiKey. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",

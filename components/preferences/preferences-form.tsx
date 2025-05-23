@@ -3,20 +3,41 @@
 import { useState, useEffect } from 'react';
 
 interface FormData {
+  // Basic Info
   name: string;
-  language: string;
-  tone: string;
-  interests: string;
-  apiKey: string;
+  
+  // Location Information
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  
+  // General Preferences (single string)
+  generalPreferences: string;
+  
+  // Sensitive Preferences
+  privacySettings: string;
+  dataSharing: string;
+  
+  // Stored Credentials
+  apiKeys: string;
+  tokens: string;
 }
 
 export function PreferencesForm() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
-    language: '',
-    tone: '',
-    interests: '',
-    apiKey: '',
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    zipCode: '',
+    generalPreferences: '',
+    privacySettings: '',
+    dataSharing: '',
+    apiKeys: '',
+    tokens: '',
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -93,80 +114,178 @@ export function PreferencesForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+        {/* Basic Information */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="language" className="block text-sm font-medium text-gray-700">
-            Language
-          </label>
-          <select
-            id="language"
-            value={formData.language}
-            onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="">Select a language</option>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-          </select>
+        {/* Location Information */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold mb-4">Location Information</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+                State
+              </label>
+              <input
+                type="text"
+                id="state"
+                value={formData.state}
+                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                Country
+              </label>
+              <input
+                type="text"
+                id="country"
+                value={formData.country}
+                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
+                ZIP Code
+              </label>
+              <input
+                type="text"
+                id="zipCode"
+                value={formData.zipCode}
+                onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="tone" className="block text-sm font-medium text-gray-700">
-            Tone
-          </label>
-          <select
-            id="tone"
-            value={formData.tone}
-            onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="">Select a tone</option>
-            <option value="formal">Formal</option>
-            <option value="casual">Casual</option>
-            <option value="friendly">Friendly</option>
-            <option value="professional">Professional</option>
-          </select>
+        {/* General Preferences */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold mb-4">General Preferences</h2>
+          <div>
+            <label htmlFor="generalPreferences" className="block text-sm font-medium text-gray-700">
+              General Preferences
+            </label>
+            <textarea
+              id="generalPreferences"
+              value={formData.generalPreferences}
+              onChange={(e) => setFormData({ ...formData, generalPreferences: e.target.value })}
+              rows={4}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              placeholder="Enter your general preferences (e.g., language, timezone, theme, notification preferences)"
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="interests" className="block text-sm font-medium text-gray-700">
-            Interests
-          </label>
-          <textarea
-            id="interests"
-            value={formData.interests}
-            onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            placeholder="Enter your interests, separated by commas"
-          />
+        {/* Sensitive Preferences */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold mb-4">Sensitive Preferences</h2>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="privacySettings" className="block text-sm font-medium text-gray-700">
+                Privacy Settings
+              </label>
+              <select
+                id="privacySettings"
+                value={formData.privacySettings}
+                onChange={(e) => setFormData({ ...formData, privacySettings: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select privacy level</option>
+                <option value="strict">Strict</option>
+                <option value="moderate">Moderate</option>
+                <option value="relaxed">Relaxed</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="dataSharing" className="block text-sm font-medium text-gray-700">
+                Data Sharing
+              </label>
+              <select
+                id="dataSharing"
+                value={formData.dataSharing}
+                onChange={(e) => setFormData({ ...formData, dataSharing: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select data sharing preference</option>
+                <option value="none">No Sharing</option>
+                <option value="anonymous">Anonymous Only</option>
+                <option value="full">Full Sharing</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700">
-            API Key
-          </label>
-          <input
-            type="password"
-            id="apiKey"
-            value={formData.apiKey}
-            onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+        {/* Stored Credentials */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold mb-4">Stored Credentials</h2>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="apiKeys" className="block text-sm font-medium text-gray-700">
+                API Keys
+              </label>
+              <textarea
+                id="apiKeys"
+                value={formData.apiKeys}
+                onChange={(e) => setFormData({ ...formData, apiKeys: e.target.value })}
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="Enter API keys (one per line)"
+              />
+            </div>
+            <div>
+              <label htmlFor="tokens" className="block text-sm font-medium text-gray-700">
+                Tokens
+              </label>
+              <textarea
+                id="tokens"
+                value={formData.tokens}
+                onChange={(e) => setFormData({ ...formData, tokens: e.target.value })}
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="Enter tokens (one per line)"
+              />
+            </div>
+          </div>
         </div>
 
         <div>
