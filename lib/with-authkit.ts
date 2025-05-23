@@ -21,6 +21,27 @@ export interface Authorization {
 export function withAuthkit(
   next: (request: NextRequest, auth: Authorization) => Promise<Response>,
 ): (request: NextRequest) => Promise<Response> {
+
+  // TODO: Remove this once we have a real auth system
+  const user: User = {
+    id: "debug-user-123",
+    email: "debug@example.com",
+    emailVerified: true,
+    profilePictureUrl: "https://example.com/profile.png",
+    firstName: "Debug",
+    lastName: "User",
+    object: "user",
+    lastSignInAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    externalId: "debug-user-123",
+    metadata: {},
+  };
+
+  return async (request: NextRequest) => {
+    return next(request, { user, accessToken: "debug-token", claims: { sub: "debug-user-123", iss: "https://authkit.com", aud: "https://authkit.com", sid: "debug-session-123", jti: "debug-token-123" } });
+  };
+  
   const authkitDomain = process.env.AUTHKIT_DOMAIN;
 
   const jwks = jose.createRemoteJWKSet(
