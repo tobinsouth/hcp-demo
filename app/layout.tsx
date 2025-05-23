@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MCP Shop",
-  description: "The latest and greatest MCP merch",
+  title: "Human Context Protocol",
+  description: "A personalized experience through user preferences and AI-powered natural language interaction",
 };
 
 export default function RootLayout({
