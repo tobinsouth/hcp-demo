@@ -21,8 +21,8 @@ export interface Authorization {
 export function withAuthkit(
   next: (request: NextRequest, auth: Authorization) => Promise<Response>,
 ): (request: NextRequest) => Promise<Response> {
-
-  // TODO: Remove this once we have a real auth system
+  
+// TODO: Remove this once we have a real auth system
   const user: User = {
     id: "debug-user-123",
     email: "debug@example.com",

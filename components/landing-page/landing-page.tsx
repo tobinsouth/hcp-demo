@@ -59,9 +59,16 @@ export function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Seamlessly transfer your preferences and context between AI tools. 
-          Take control of your digital identity and experience consistent, 
-          personalized interactions across the AI landscape.
+          NeurIPS AI Conference Research Paper Demo
+        </motion.p>
+
+        <motion.p 
+          className="text-lg text-gray-300 leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          A demonstration of of the Human Context Protocol allowing user to transfer their preferences between AI tools via MCP.
         </motion.p>
 
         <motion.div 
