@@ -50,6 +50,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the UI demo.
 
+Once your AI client has picked up the server (e.g., Cursor:Settings/Cursor Settings/MCP) you can simple ask the agent to update your preferences.
 
 ## Connecting to MCP
 
@@ -60,6 +61,8 @@ The simplest way to access MCP servers is via Cursor. You will find the code req
 The demo uses WorkOS AuthKit for authentication, implemented in `lib/with-authkit.ts`. For development and demonstration purposes, the authentication is simplified with a debug user. In production, you should:
 
 1. Set up WorkOS AuthKit following their instructions [here](https://workos.com/docs/user-management/vanilla/nodejs). This will involve setting up an account, accessing keys, and setting a redirect URL. This does not need to be done for local demos.
+
+Speficially, you will need to add to `.env` a `WORKOS_API_KEY`, `WORKOS_CLIENT_ID`, `WORKOS_COOKIE_PASSWORD`
 
 2. Remove the debug user code in `lib/with-authkit.ts` by uncommenting the production authentication code and removing the debug user object.
 
