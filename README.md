@@ -20,12 +20,40 @@ OPENAI_API_KEY=your_openai_api_key
 DATABASE_URL="file:./dev.db"
 ```
 
-4. Run the development server:
+4. You may need to set up a local redis and prisma deployment if this is your first time. For example
+    a. Install Redis:
+    - On macOS (using Homebrew):
+        ```bash
+        brew install redis
+        brew services start redis
+        ```
+    - On Linux:
+        ```bash
+        sudo apt-get install redis-server
+        sudo systemctl start redis-server
+        ```
+
+   b. Set up Prisma:
+   ```bash
+   # Initialize the database
+   pnpm prisma generate
+   pnpm prisma db push
+   ```
+
+    Note: The project uses SQLite as the database provider (configured in prisma/schema.prisma), so no additional database installation is required. The database file will be created at `prisma/dev.db`.
+
+
+5. Run the development server:
 ```bash
 pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the UI demo.
+
+
+## Connecting to MCP
+
+The simplest way to access MCP servers is via Cursor. You will find the code requried to access a workspace MCP server in `.cursor/mcp.json`. If you do not have access to cursor as an MCP client, this JSON will work with any other client that supports MCP (e.g., claude desktop, goose). The `Connect to MCP` button in the demo explains more.
 
 ## Authentication Setup
 
@@ -42,21 +70,3 @@ The demo uses WorkOS AuthKit for authentication, implemented in `lib/with-authki
 - `/components`: React components
 - `/lib`: Utility functions and database configuration
 - `/prisma`: Database schema and migrations
-
-## Technical Implementation
-
-- **Framework**: Next.js 14
-- **Authentication**: WorkOS AuthKit
-- **Database**: Prisma with SQLite
-- **AI**: OpenAI GPT-4
-- **Styling**: Tailwind CSS
-- **Protocol**: Model Context Protocol (MCP)
-
-## Deployment
-
-The demo can be deployed on Vercel:
-
-1. Push your code to a Git repository
-2. Import the project in Vercel
-3. Configure the required environment variables
-4. Deploy
