@@ -7,10 +7,10 @@ const DEBUG_USER_ID = "debug-user-123";
 
 export async function GET() {
   try {
-    // const { user } = await withAuth();
-    // if (!user) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    const { user } = await withAuth();
+    if (!user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     const preferences = await prisma.userPreferences.findUnique({
       where: { userId: DEBUG_USER_ID },
@@ -25,10 +25,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    // const { user } = await withAuth();
-    // if (!user) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    const { user } = await withAuth();
+    if (!user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     const data = await request.json();
 
