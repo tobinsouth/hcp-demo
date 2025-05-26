@@ -1,6 +1,6 @@
 import { getSignInUrl, signOut, withAuth } from "@workos-inc/authkit-nextjs";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
 export async function Navbar() {
