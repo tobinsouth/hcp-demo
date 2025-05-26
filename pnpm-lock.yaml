@@ -38,6 +38,9 @@ importers:
       '@radix-ui/themes':
         specifier: ^3.2.1
         version: 3.2.1(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@upstash/redis':
+        specifier: ^1.34.9
+        version: 1.34.9
       '@vercel/mcp-adapter':
         specifier: ^0.2.3
         version: 0.2.4(@modelcontextprotocol/sdk@1.12.0)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(redis@4.7.1)
@@ -1526,6 +1529,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@upstash/redis@1.34.9':
+    resolution: {integrity: sha512-7qzzF2FQP5VxR2YUNjemWs+hl/8VzJJ6fOkT7O7kt9Ct8olEVzb1g6/ik6B8Pb8W7ZmYv81SdlVV9F6O8bh/gw==}
+
   '@vercel/mcp-adapter@0.2.4':
     resolution: {integrity: sha512-YcUBSL3kZM6eX2YMtZYlT5he/vbcQOlse0dXRBDD51QLC+boVf7QZZi19JzuH4ccct/GyeI1Z4/6BcMiy1EhMQ==}
     peerDependencies:
@@ -1765,6 +1771,9 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
 
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
@@ -4681,6 +4690,10 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.7.2':
     optional: true
 
+  '@upstash/redis@1.34.9':
+    dependencies:
+      crypto-js: 4.2.0
+
   '@vercel/mcp-adapter@0.2.4(@modelcontextprotocol/sdk@1.12.0)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(redis@4.7.1)':
     dependencies:
       '@modelcontextprotocol/sdk': 1.12.0
@@ -4962,6 +4975,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  crypto-js@4.2.0: {}
 
   csstype@3.1.3: {}
 

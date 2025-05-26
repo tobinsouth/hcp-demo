@@ -8,9 +8,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Temporary debug user ID
-const DEBUG_USER_ID = "debug-user-123";
-
 const handler = withAuthkit((request, auth) =>
   createMcpHandler(
     (server) => {
@@ -48,20 +45,20 @@ const handler = withAuthkit((request, auth) =>
             try {
               parsedResponse = JSON.parse(content);
             } catch (e) {
-              throw new Error("Failed to parse OpenAI response as JSON");
+              throw new Error("Failed to parse OpenAI response as JSON", { cause: e });
             }
 
             const { field, value } = parsedResponse;
 
             // First get the current preferences
             const currentPreferences = await prisma.userPreferences.findUnique({
-              where: { userId: DEBUG_USER_ID },
+              where: { userId: auth.user.id },
             });
             
             console.log('Current preferences:', currentPreferences);
 
             // Get the current value for the field
-            const currentValue = currentPreferences?.[field] || "";
+            const currentValue = currentPreferences?.[field as keyof typeof currentPreferences] || "";
             console.log('Current value for field:', field, currentValue);
 
             // Use OpenAI to combine the current and new preferences
@@ -105,10 +102,10 @@ const handler = withAuthkit((request, auth) =>
             console.log('Update data:', updateData);
 
             const preferences = await prisma.userPreferences.upsert({
-              where: { userId: DEBUG_USER_ID },
+              where: { userId: auth.user.id },
               update: updateData,
               create: {
-                userId: DEBUG_USER_ID,
+                userId: auth.user.id,
                 ...updateData
               },
             });
@@ -177,14 +174,14 @@ const handler = withAuthkit((request, auth) =>
             try {
               parsedResponse = JSON.parse(content);
             } catch (e) {
-              throw new Error("Failed to parse OpenAI response as JSON");
+              throw new Error("Failed to parse OpenAI response as JSON", { cause: e });
             }
 
             const { field } = parsedResponse;
 
             // Clear the preference in the database
             const preferences = await prisma.userPreferences.update({
-              where: { userId: DEBUG_USER_ID },
+              where: { userId: auth.user.id },
               data: { [field]: "" },
             });
 
@@ -248,14 +245,14 @@ const handler = withAuthkit((request, auth) =>
             try {
               parsedResponse = JSON.parse(content);
             } catch (e) {
-              throw new Error("Failed to parse OpenAI response as JSON");
+              throw new Error("Failed to parse OpenAI response as JSON", { cause: e });
             }
 
             const { field } = parsedResponse;
 
             // Get the preference from the database
             const preferences = await prisma.userPreferences.findUnique({
-              where: { userId: DEBUG_USER_ID },
+              where: { userId: auth.user.id },
             });
 
             if (!preferences) {
@@ -276,7 +273,7 @@ const handler = withAuthkit((request, auth) =>
                   text: JSON.stringify({
                     status: "success",
                     field,
-                    value: preferences[field],
+                    value: preferences[field as keyof typeof preferences],
                     preferences,
                   }),
                 },
