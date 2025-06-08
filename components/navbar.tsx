@@ -1,44 +1,34 @@
-import { getSignInUrl, signOut, withAuth } from "@workos-inc/authkit-nextjs";
-import Link from "next/link";
-// import Image from "next/image";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { Box, Flex, Text } from '@radix-ui/themes';
+import { ShoppingCartIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 
-export async function Navbar() {
-  const { user } = await withAuth();
-
+export function Navbar() {
   return (
-    <nav className="flex items-center justify-between p-4 text-neutral-400">
-      <Link className="flex" href="/">
-        {/* <Image alt="HCP logo" src="/logo.png" height={40} width={40} /> */}
-        <div className="flex w-full items-center font-bold text-lg pl-1">
-          HCP
-        </div>
-      </Link>
-      <div>
-        {user ? (
-          <div className="flex gap-2 items-center">
-            <Link className="flex gap-2 items-center" href="/orders">
-              <ShoppingCartIcon className="h-5 border rounded m-1 text-foreground" />
-              <div className="hidden lg:block">
-                Welcome back, {user.firstName ?? user.email}.
-              </div>
+    <Box asChild>
+      <nav>
+        <Flex align="center" justify="between" p="4">
+          <Link href="/">
+            <Flex align="center">
+              <Text weight="bold" size="5" as="span" pl="1">
+                HCP
+              </Text>
+            </Flex>
+          </Link>
+          <Flex align="center" gap="2">
+            <Link href="/orders">
+              <Flex align="center" gap="2">
+                <ShoppingCartIcon />
+                <Box asChild>
+                  <div>Orders</div>
+                </Box>
+              </Flex>
             </Link>
-            <form
-              className="inline"
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
-            >
-              <button className="underline" type="submit">
-                Sign out
-              </button>
+            <form action="/api/auth/signout" method="post">
+              <button type="submit">Sign out</button>
             </form>
-          </div>
-        ) : (
-          <Link href={await getSignInUrl()}>Sign in</Link>
-        )}
-      </div>
-    </nav>
+          </Flex>
+        </Flex>
+      </nav>
+    </Box>
   );
 }
