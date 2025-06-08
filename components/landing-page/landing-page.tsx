@@ -4,6 +4,7 @@ import { Instructions } from "@/components/instructions";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { Text } from '@radix-ui/themes';
 
 const BlobBackground = () => {
   return (
@@ -50,7 +51,9 @@ export function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Human Context Protocol
+          <Text as="span" size="9" weight="bold" className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+            Human Context Protocol
+          </Text>
         </motion.h1>
         
         <motion.p 
@@ -59,7 +62,9 @@ export function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          NeurIPS AI Conference Research Paper Demo
+          <Text as="span" size="5" color="gray" className="text-gray-200 leading-relaxed">
+            NeurIPS AI Conference Research Paper Demo
+          </Text>
         </motion.p>
 
         <motion.p 
@@ -68,7 +73,9 @@ export function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          A demonstration of of the Human Context Protocol allowing user to transfer their preferences between AI tools via MCP.
+          <Text as="span" size="4" color="gray" className="text-gray-300 leading-relaxed">
+            A demonstration of of the Human Context Protocol allowing user to transfer their preferences between AI tools via MCP.
+          </Text>
         </motion.p>
 
         <motion.div 
@@ -81,7 +88,7 @@ export function LandingPage() {
             asChild
             className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 py-6 text-lg rounded-full"
           >
-            <Link href="/preferences">
+            <Link href="/context">
               See Dashboard
             </Link>
           </Button>
