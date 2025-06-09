@@ -1,87 +1,94 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import Image from "next/image"
-import { withAuth } from "@workos-inc/authkit-nextjs";
+import type * as React from "react"
+import { Home, Inbox, Calendar, Search, Settings, User, Server, Link, CircleUser } from "lucide-react"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { UserProfile } from "@/components/user-profile"
+import Image from "next/image"
 
-// Menu items.
-const items = [
+// Navigation items
+const navItems = [
   {
     title: "Home",
-    url: "#",
+    url: "/hcp",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Connect MCP",
+    url: "/hcp/mcp",
+    icon: Link,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "My Context",
+    url: "/hcp/context",
+    icon: CircleUser,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Integrations",
+    url: "/integrations",
+    icon: Server,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
 ]
 
-export async function AppSidebar() {
-  const { user } = await withAuth();
-
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar>
-      <SidebarContent className="flex flex-col h-full">
-        <div className="flex-1">
-          <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </div>
-        <div className="border-t border-sidebar-border p-4 flex items-center gap-3 mt-2">
-          <div className="relative w-10 h-10">
-            <Image
-              src="/man.jpg"
-              alt="User Avatar"
-              fill
-              className="rounded-full object-cover border border-gray-300 shadow"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-sm text-sidebar-foreground">John Doe</span>
-            <span className="text-xs text-sidebar-foreground/60">View profile</span>
-          </div>
-        </div>
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Image src="/logo.png" alt="My Human Context" width={32} height={32} />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">My Human Context</span>
+                  <span className="text-xs">Dashboard</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>  
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <UserProfile />
+      </SidebarFooter>
     </Sidebar>
   )
 }

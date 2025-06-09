@@ -88,7 +88,7 @@ export function LandingPage() {
             asChild
             className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 py-6 text-lg rounded-full"
           >
-            <Link href="/context">
+            <Link href="/hcp">
               See Dashboard
             </Link>
           </Button>

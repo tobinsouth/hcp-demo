@@ -98,6 +98,47 @@ function BreadcrumbEllipsis({
   )
 }
 
+export function Breadcrumbs() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+  // Remove trailing slash and split
+  const segments = pathname.replace(/\/$/, "").split("/").filter(Boolean);
+  // Find the index of 'hcp' and get the rest
+  const hcpIndex = segments.indexOf("hcp");
+  const afterHcp = hcpIndex !== -1 ? segments.slice(hcpIndex + 1) : [];
+
+  // Capitalize helper
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  return (
+    <Breadcrumb className="mb-4 px-4 pt-4">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/hcp">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        {afterHcp.length > 0 && (
+          <>
+            <BreadcrumbSeparator />
+            {afterHcp.map((seg, i) =>
+              i === afterHcp.length - 1 ? (
+                <BreadcrumbItem key={seg}>
+                  <BreadcrumbPage>{capitalize(seg)}</BreadcrumbPage>
+                </BreadcrumbItem>
+              ) : (
+                <React.Fragment key={seg}>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={`/hcp/${afterHcp.slice(0, i + 1).join("/")}`}>{capitalize(seg)}</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                </React.Fragment>
+              )
+            )}
+          </>
+        )}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+
 export {
   Breadcrumb,
   BreadcrumbList,

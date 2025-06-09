@@ -5,5 +5,5 @@ export default async function PreferencesPage() {
   const { user } = await withAuth();
  
   
-    return <PreferencesForm />;
+    return <div>Hello</div>;
 } 
