@@ -7,29 +7,21 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model UserPreferences {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  name      String?
-  
-  // Location Information
-  address   String?
-  city      String?
-  state     String?
-  country   String?
-  zipCode   String?
-  
-  // General Preferences (single string)
-  generalPreferences String?
-  
-  // Sensitive Preferences
-  privacySettings String?
-  dataSharing     String?
-  
-  // Stored Credentials
-  apiKeys    String? // JSON string of multiple API keys
-  tokens     String? // JSON string of multiple tokens
-  
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+model HumanContext {
+  id                 String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  firstName          String
+  lastName           String
+  email              String
+  country            String?
+  city               String?
+  publicAbout        String?
+  privateAbout       String?
+  privateMemories    Json?
+  privatePreferences Json?
+  secureInfo         Json?
+  customRules        String?
+
+  @@map("human_contexts")
 }
