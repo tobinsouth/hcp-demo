@@ -27,7 +27,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to update and the new value. Return a JSON object with 'field' and 'value' properties. Valid fields are: name, location, publicProfile, privateProfile, memories, privatePreferences, secureInfo, customRules. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
@@ -50,15 +50,15 @@ const handler = withAuthkit((request, auth) =>
 
             const { field, value } = parsedResponse;
 
-            // First get the current preferences
-            const currentPreferences = await prisma.userPreferences.findUnique({
-              where: { userId: auth.user.id },
+            // First get the current context
+            const currentContext = await prisma.HumanContext.findUnique({
+              where: { id: auth.user.id },
             });
             
-            console.log('Current preferences:', currentPreferences);
+            console.log('Current context:', currentContext);
 
             // Get the current value for the field
-            const currentValue = currentPreferences?.[field as keyof typeof currentPreferences] || "";
+            const currentValue = currentContext?.[field as keyof typeof currentContext] || "";
             console.log('Current value for field:', field, currentValue);
 
             // Use OpenAI to combine the current and new preferences
@@ -70,7 +70,7 @@ const handler = withAuthkit((request, auth) =>
                   content: `You are a preference combiner. Given a current preference text and a new preference, combine them into a single coherent preference text. 
                   If the current text is empty, just use the new preference.
                   If both exist, intelligently combine them while maintaining all important information.
-                  For generalPreferences, combine all preferences into a single coherent string.
+                  For privatePreferences, combine all preferences into a single coherent string.
                   Return only the combined text, no explanation or JSON.`
                 },
                 {
@@ -83,33 +83,30 @@ const handler = withAuthkit((request, auth) =>
             const combinedValue = combineCompletion.choices[0].message.content?.trim() || value;
             console.log('Combined value:', combinedValue);
 
-            // Update the preference in the database with the combined value
+            // Update the context in the database with the combined value
             const updateData = {
               [field]: combinedValue,
-              // Preserve other fields from current preferences
-              name: field === 'name' ? combinedValue : (currentPreferences?.name ?? null),
-              address: field === 'address' ? combinedValue : (currentPreferences?.address ?? null),
-              city: field === 'city' ? combinedValue : (currentPreferences?.city ?? null),
-              state: field === 'state' ? combinedValue : (currentPreferences?.state ?? null),
-              country: field === 'country' ? combinedValue : (currentPreferences?.country ?? null),
-              zipCode: field === 'zipCode' ? combinedValue : (currentPreferences?.zipCode ?? null),
-              generalPreferences: field === 'generalPreferences' ? combinedValue : (currentPreferences?.generalPreferences ?? null),
-              privacySettings: field === 'privacySettings' ? combinedValue : (currentPreferences?.privacySettings ?? null),
-              dataSharing: field === 'dataSharing' ? combinedValue : (currentPreferences?.dataSharing ?? null),
-              apiKeys: field === 'apiKeys' ? combinedValue : (currentPreferences?.apiKeys ?? null),
-              tokens: field === 'tokens' ? combinedValue : (currentPreferences?.tokens ?? null),
+              // Preserve other fields from current context
+              name: field === 'name' ? combinedValue : (currentContext?.name ?? null),
+              location: field === 'location' ? combinedValue : (currentContext?.location ?? null),
+              publicProfile: field === 'publicProfile' ? combinedValue : (currentContext?.publicProfile ?? null),
+              privateProfile: field === 'privateProfile' ? combinedValue : (currentContext?.privateProfile ?? null),
+              memories: field === 'memories' ? combinedValue : (currentContext?.memories ?? null),
+              privatePreferences: field === 'privatePreferences' ? combinedValue : (currentContext?.privatePreferences ?? null),
+              secureInfo: field === 'secureInfo' ? combinedValue : (currentContext?.secureInfo ?? null),
+              customRules: field === 'customRules' ? combinedValue : (currentContext?.customRules ?? null),
             };
             console.log('Update data:', updateData);
 
-            const preferences = await prisma.userPreferences.upsert({
-              where: { userId: auth.user.id },
+            const context = await prisma.HumanContext.upsert({
+              where: { id: auth.user.id },
               update: updateData,
               create: {
-                userId: auth.user.id,
+                id: auth.user.id,
                 ...updateData
               },
             });
-            console.log('Updated preferences:', preferences);
+            console.log('Updated context:', context);
 
             return {
               content: [
@@ -121,7 +118,7 @@ const handler = withAuthkit((request, auth) =>
                     previousValue: currentValue,
                     newValue: value,
                     combinedValue,
-                    preferences,
+                    context,
                   }),
                 },
               ],
@@ -156,7 +153,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to clear. Return a JSON object with a 'field' property. Valid fields are: name, location, publicProfile, privateProfile, memories, privatePreferences, secureInfo, customRules. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
@@ -180,8 +177,8 @@ const handler = withAuthkit((request, auth) =>
             const { field } = parsedResponse;
 
             // Clear the preference in the database
-            const preferences = await prisma.userPreferences.update({
-              where: { userId: auth.user.id },
+            const context = await prisma.HumanContext.update({
+              where: { id: auth.user.id },
               data: { [field]: "" },
             });
 
@@ -192,7 +189,7 @@ const handler = withAuthkit((request, auth) =>
                   text: JSON.stringify({
                     status: "success",
                     message: `Cleared ${field}`,
-                    preferences,
+                    context,
                   }),
                 },
               ],
@@ -227,7 +224,7 @@ const handler = withAuthkit((request, auth) =>
               messages: [
                 {
                   role: "system",
-                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, address, city, state, country, zipCode, generalPreferences, privacySettings, dataSharing, apiKeys, tokens. Format your response as a valid JSON object."
+                  content: "You are a preference parser. Given a natural language input, determine which preference field to look up. Return a JSON object with a 'field' property. Valid fields are: name, location, publicProfile, privateProfile, memories, privatePreferences, secureInfo, customRules. Format your response as a valid JSON object."
                 },
                 {
                   role: "user",
@@ -251,11 +248,11 @@ const handler = withAuthkit((request, auth) =>
             const { field } = parsedResponse;
 
             // Get the preference from the database
-            const preferences = await prisma.userPreferences.findUnique({
-              where: { userId: auth.user.id },
+            const context = await prisma.HumanContext.findUnique({
+              where: { id: auth.user.id },
             });
 
-            if (!preferences) {
+            if (!context) {
               return {
                 content: [
                   {
@@ -273,8 +270,8 @@ const handler = withAuthkit((request, auth) =>
                   text: JSON.stringify({
                     status: "success",
                     field,
-                    value: preferences[field as keyof typeof preferences],
-                    preferences,
+                    value: context[field as keyof typeof context],
+                    context,
                   }),
                 },
               ],
