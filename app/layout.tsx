@@ -6,7 +6,6 @@ import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import '@workos-inc/widgets/styles.css';
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,17 +23,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
-        <Theme appearance="light">
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <Theme>
           <AuthKitProvider>
-            {children}
+              {children}
           </AuthKitProvider>
         </Theme>
       </body>

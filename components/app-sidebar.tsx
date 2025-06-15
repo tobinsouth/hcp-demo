@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { Home, Inbox, Calendar, Search, Settings, User, Server, Link, CircleUser } from "lucide-react"
+import { Home, Inbox, Calendar, Search, Settings, User, Server, Link, CircleUser, HelpCircle } from "lucide-react"
 
 import {
   Sidebar,
@@ -24,24 +24,30 @@ const navItems = [
     icon: Home,
   },
   {
-    title: "Connect MCP",
-    url: "/hcp/mcp",
-    icon: Link,
-  },
-  {
     title: "My Context",
     url: "/hcp/context",
     icon: CircleUser,
   },
   {
+    title: "Preferences",
+    url: "/hcp/preferences",
+    icon: Settings,
+  },
+  {
+    title: "Memories",
+    url: "/hcp/memories",
+    icon: Inbox,
+  },
+  {
+    title: "Connect MCP",
+    url: "/hcp/mcp",
+    icon: Link,
+  },
+  {
     title: "Integrations",
     url: "/integrations",
     icon: Server,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
+    disabled: true,
   },
 ]
 
@@ -73,11 +79,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </a>
+                  <SidebarMenuButton asChild disabled={item.disabled}>
+                    {item.disabled ? (
+                      <span className="flex items-center gap-2 cursor-not-allowed opacity-50">
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </span>
+                    ) : (
+                      <a href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </a>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -87,6 +100,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild disabled>
+              <span className="flex items-center gap-2 cursor-not-allowed opacity-50">
+                <HelpCircle className="size-4" />
+                <span>Get Help</span>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <a href="/hcp/settings">
+                <Settings className="size-4" />
+                <span>Settings</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <UserProfile />
       </SidebarFooter>
     </Sidebar>
