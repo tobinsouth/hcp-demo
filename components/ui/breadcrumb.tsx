@@ -1,6 +1,8 @@
+'use client'
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, MoreHorizontal } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 
@@ -99,7 +101,7 @@ function BreadcrumbEllipsis({
 }
 
 export function Breadcrumbs() {
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+  const pathname = usePathname();
   // Remove trailing slash and split
   const segments = pathname.replace(/\/$/, "").split("/").filter(Boolean);
   // Find the index of 'hcp' and get the rest
@@ -110,7 +112,7 @@ export function Breadcrumbs() {
   const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <Breadcrumb className="mb-4 px-4 pt-4">
+    <Breadcrumb className="flex items-center text-sm text-muted-foreground font-normal">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/hcp">Home</BreadcrumbLink>
